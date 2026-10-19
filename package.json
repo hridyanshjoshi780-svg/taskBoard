@@ -1,0 +1,17 @@
+{
+  "name": "taskboard-kanban",
+  "version": "1.0.0",
+  "description": "TaskBoard - Kanban Task Management System MVP",
+  "main": "server/app.js",
+  "scripts": {
+    "start": "node server/app.js",
+    "dev": "node --watch server/app.js"
+  },
+  "dependencies": {
+    "bcryptjs": "^2.4.3",
+    "better-sqlite3": "^11.8.1",
+    "dotenv": "^16.4.7",
+    "express": "^4.21.2",
+    "jsonwebtoken": "^9.0.2"
+  }
+}
