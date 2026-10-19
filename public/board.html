@@ -1,0 +1,453 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>TaskBoard · Kanban Board</title>
+  <link rel="stylesheet" href="/styles.css">
+</head>
+<body class="board-page">
+  <!-- Top Navigation -->
+  <header class="app-topbar">
+    <div class="brand-wrapper">
+      <a class="brand-logo" href="/dashboard.html">
+        <span class="brand-badge" aria-hidden="true">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+            <rect x="3" y="3" width="18" height="18" rx="3" />
+            <path d="M9 3v18" />
+            <path d="M15 3v18" />
+          </svg>
+        </span>
+        <span>TaskBoard</span>
+      </a>
+      <span class="breadcrumb-separator" aria-hidden="true">/</span>
+      <a href="/dashboard.html" class="btn btn-subtle btn-sm" id="back-to-boards-nav">
+        <svg viewBox="0 0 20 20" fill="currentColor">
+          <path fill-rule="evenodd" d="M12.707 5.293a1 1 0 010 1.414L9.414 10l3.293 3.293a1 1 0 01-1.414 1.414l-4-4a1 1 0 010-1.414l4-4a1 1 0 011.414 0z" clip-rule="evenodd" />
+        </svg>
+        <span>Boards</span>
+      </a>
+    </div>
+
+    <nav class="topbar-nav">
+      <div class="nav-user">
+        <div class="user-avatar" id="user-avatar" title="Current User">?</div>
+        <div class="user-details">
+          <span class="user-name" id="user-name">Loading…</span>
+          <span class="user-email" id="user-email"></span>
+        </div>
+      </div>
+      <button id="logout-button" class="btn btn-secondary btn-sm" type="button" title="Sign out of TaskBoard">
+        <svg viewBox="0 0 20 20" fill="currentColor">
+          <path fill-rule="evenodd" d="M3 3a1 1 0 00-1 1v12a1 1 0 102 0V4a1 1 0 00-1-1zm10.293 9.293a1 1 0 001.414 1.414l3-3a1 1 0 000-1.414l-3-3a1 1 0 10-1.414 1.414L14.586 9H7a1 1 0 100 2h7.586l-1.293 1.293z" clip-rule="evenodd" />
+        </svg>
+        <span>Sign Out</span>
+      </button>
+    </nav>
+  </header>
+
+  <div class="board-layout">
+    <!-- Board Sub-header & Toolbar -->
+    <section class="board-subbar">
+      <div class="board-header-top">
+        <div class="board-meta">
+          <div class="board-title-group">
+            <h1 class="board-name-display" id="board-name">Loading Board…</h1>
+            <span class="badge-role" id="board-role-badge"></span>
+          </div>
+          <p class="board-description-display" id="board-desc"></p>
+        </div>
+
+        <div class="board-header-actions">
+          <!-- Members list -->
+          <div class="members-wrapper" id="members-wrapper">
+            <div class="member-stack" id="member-stack"></div>
+            <button type="button" class="btn btn-secondary btn-sm" id="manage-members-btn" title="Manage board members">
+              <svg viewBox="0 0 20 20" fill="currentColor">
+                <path d="M9 6a3 3 0 11-6 0 3 3 0 016 0zM17 6a3 3 0 11-6 0 3 3 0 016 0zM12.93 17c.046-.327.07-.66.07-1a6.97 6.97 0 00-1.5-4.33A5 5 0 0119 16v1h-6.07zM6 11a5 5 0 015 5v1H1v-1a5 5 0 015-5z" />
+              </svg>
+              <span>Members</span>
+            </button>
+          </div>
+
+          <button type="button" class="btn btn-secondary btn-sm" id="add-column-top-btn">
+            <svg viewBox="0 0 20 20" fill="currentColor">
+              <path fill-rule="evenodd" d="M10 3a1 1 0 011 1v5h5a1 1 0 110 2h-5v5a1 1 0 11-2 0v-5H4a1 1 0 110-2h5V4a1 1 0 011-1z" clip-rule="evenodd" />
+            </svg>
+            <span>Add Column</span>
+          </button>
+
+          <button type="button" class="btn btn-primary btn-sm" id="add-task-top-btn">
+            <svg viewBox="0 0 20 20" fill="currentColor">
+              <path fill-rule="evenodd" d="M10 3a1 1 0 011 1v5h5a1 1 0 110 2h-5v5a1 1 0 11-2 0v-5H4a1 1 0 110-2h5V4a1 1 0 011-1z" clip-rule="evenodd" />
+            </svg>
+            <span>Add Task</span>
+          </button>
+        </div>
+      </div>
+
+      <!-- Search & Filters Toolbar -->
+      <div class="board-toolbar">
+        <div class="toolbar-filters">
+          <div class="search-box">
+            <svg class="search-icon" viewBox="0 0 20 20" fill="currentColor">
+              <path fill-rule="evenodd" d="M8 4a4 4 0 100 8 4 4 0 000-8zM2 8a6 6 0 1110.89 3.476l4.817 4.817a1 1 0 01-1.414 1.414l-4.816-4.816A6 6 0 012 8z" clip-rule="evenodd" />
+            </svg>
+            <input
+              type="text"
+              id="search-input"
+              class="form-control search-input"
+              placeholder="Search tasks by title or notes…"
+              autocomplete="off"
+            >
+            <button type="button" class="btn-subtle search-clear-btn hidden" id="search-clear-btn" title="Clear search">
+              <svg viewBox="0 0 20 20" fill="currentColor" style="width: 14px; height: 14px;">
+                <path fill-rule="evenodd" d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z" clip-rule="evenodd" />
+              </svg>
+            </button>
+          </div>
+
+          <select id="priority-filter" class="filter-select" aria-label="Filter tasks by priority">
+            <option value="ALL">All Priorities</option>
+            <option value="High">High Priority</option>
+            <option value="Medium">Medium Priority</option>
+            <option value="Low">Low Priority</option>
+          </select>
+
+          <select id="assignee-filter" class="filter-select" aria-label="Filter tasks by assignee">
+            <option value="ALL">All Assignees</option>
+            <option value="UNASSIGNED">Unassigned</option>
+          </select>
+
+          <button type="button" class="btn btn-subtle btn-sm hidden" id="reset-filters-btn">
+            <span>Clear Filters</span>
+          </button>
+        </div>
+      </div>
+    </section>
+
+    <!-- Global Error Banner (if board loading fails) -->
+    <div id="board-alert" class="form-alert form-alert-error hidden" style="margin: 16px 24px 0;" role="alert">
+      <svg viewBox="0 0 20 20" fill="currentColor">
+        <path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7 4a1 1 0 11-2 0 1 1 0 012 0zm-1-9a1 1 0 00-1 1v4a1 1 0 102 0V6a1 1 0 00-1-1z" clip-rule="evenodd" />
+      </svg>
+      <span id="board-alert-message"></span>
+    </div>
+
+    <!-- Kanban Columns Horizontal Scroll Canvas -->
+    <main class="kanban-canvas" id="columns-canvas" aria-live="polite">
+      <!-- Loading skeletons -->
+      <div class="kanban-column skeleton" style="min-height: 380px;"></div>
+      <div class="kanban-column skeleton" style="min-height: 380px;"></div>
+      <div class="kanban-column skeleton" style="min-height: 380px;"></div>
+    </main>
+  </div>
+
+  <!-- Task Dialog / Modal (Create & Edit) -->
+  <div id="task-modal" class="modal-backdrop hidden" role="dialog" aria-modal="true" aria-labelledby="task-modal-title">
+    <div class="modal-dialog">
+      <div class="modal-header">
+        <h2 id="task-modal-title" class="modal-title">Task Details</h2>
+        <button type="button" class="btn-icon modal-close" id="close-task-modal" aria-label="Close dialog">
+          <svg viewBox="0 0 20 20" fill="currentColor" style="width: 18px; height: 18px;">
+            <path fill-rule="evenodd" d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z" clip-rule="evenodd" />
+          </svg>
+        </button>
+      </div>
+
+      <form id="task-form" novalidate>
+        <div class="modal-body">
+          <!-- Pending Integration Notice -->
+          <div class="integration-notice" role="status">
+            <svg viewBox="0 0 20 20" fill="currentColor">
+              <path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z" clip-rule="evenodd" />
+            </svg>
+            <div>
+              <strong>Frontend Milestone 1 Notice:</strong>
+              Backend task mutation APIs (create/edit/delete) are scheduled for the next milestone. Form validation and UI controls are active.
+            </div>
+          </div>
+
+          <!-- Form Error / Status Banner -->
+          <div id="task-form-alert" class="form-alert form-alert-error hidden" role="alert">
+            <svg viewBox="0 0 20 20" fill="currentColor">
+              <path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7 4a1 1 0 11-2 0 1 1 0 012 0zm-1-9a1 1 0 00-1 1v4a1 1 0 102 0V6a1 1 0 00-1-1z" clip-rule="evenodd" />
+            </svg>
+            <span id="task-form-alert-message"></span>
+          </div>
+
+          <input type="hidden" id="task-id" name="id">
+
+          <div class="form-group">
+            <label class="form-label" for="task-title">
+              Task title <span class="required">*</span>
+            </label>
+            <input
+              id="task-title"
+              name="title"
+              type="text"
+              class="form-control"
+              required
+              maxlength="150"
+              placeholder="e.g. Set up database migrations"
+            >
+          </div>
+
+          <div class="form-row">
+            <div class="form-group">
+              <label class="form-label" for="task-column">
+                Column <span class="required">*</span>
+              </label>
+              <select id="task-column" name="column_id" class="form-control" required>
+                <!-- Dynamically populated -->
+              </select>
+            </div>
+
+            <div class="form-group">
+              <label class="form-label" for="task-priority">
+                Priority <span class="required">*</span>
+              </label>
+              <select id="task-priority" name="priority" class="form-control" required>
+                <option value="Low">Low</option>
+                <option value="Medium" selected>Medium</option>
+                <option value="High">High</option>
+              </select>
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label class="form-label" for="task-desc">
+              Description <span class="form-hint">(optional)</span>
+            </label>
+            <textarea
+              id="task-desc"
+              name="description"
+              class="form-control"
+              rows="3"
+              maxlength="500"
+              placeholder="Add details, acceptance criteria, or context…"
+            ></textarea>
+          </div>
+
+          <div class="form-row">
+            <div class="form-group">
+              <label class="form-label" for="task-due-date">
+                Due date <span class="form-hint">(optional)</span>
+              </label>
+              <input
+                id="task-due-date"
+                name="due_date"
+                type="date"
+                class="form-control"
+              >
+            </div>
+
+            <div class="form-group">
+              <label class="form-label" for="task-assignee">
+                Assignee <span class="form-hint">(optional)</span>
+              </label>
+              <select id="task-assignee" name="assignee_id" class="form-control">
+                <option value="">Unassigned</option>
+                <!-- Dynamically populated from board members -->
+              </select>
+            </div>
+          </div>
+        </div>
+
+        <div class="modal-footer" style="justify-content: space-between;">
+          <div>
+            <button type="button" class="btn btn-danger hidden" id="delete-task-btn">Delete Task</button>
+          </div>
+          <div style="display: flex; gap: 10px;">
+            <button type="button" class="btn btn-secondary" id="cancel-task-btn">Cancel</button>
+            <button type="submit" class="btn btn-primary" id="save-task-btn">Save Task</button>
+          </div>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- Add Column Dialog / Modal -->
+  <div id="add-column-modal" class="modal-backdrop hidden" role="dialog" aria-modal="true" aria-labelledby="add-column-title">
+    <div class="modal-dialog" style="max-width: 420px;">
+      <div class="modal-header">
+        <h2 id="add-column-title" class="modal-title">Add Column</h2>
+        <button type="button" class="btn-icon modal-close" id="close-add-col-modal" aria-label="Close dialog">
+          <svg viewBox="0 0 20 20" fill="currentColor" style="width: 18px; height: 18px;">
+            <path fill-rule="evenodd" d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z" clip-rule="evenodd" />
+          </svg>
+        </button>
+      </div>
+
+      <form id="add-column-form" novalidate>
+        <div class="modal-body">
+          <div id="add-col-error" class="form-alert form-alert-error hidden" role="alert">
+            <svg viewBox="0 0 20 20" fill="currentColor">
+              <path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7 4a1 1 0 11-2 0 1 1 0 012 0zm-1-9a1 1 0 00-1 1v4a1 1 0 102 0V6a1 1 0 00-1-1z" clip-rule="evenodd" />
+            </svg>
+            <span id="add-col-error-msg"></span>
+          </div>
+
+          <div class="form-group">
+            <label class="form-label" for="column-name-input">
+              Column title <span class="required">*</span>
+            </label>
+            <input
+              id="column-name-input"
+              name="name"
+              type="text"
+              class="form-control"
+              required
+              maxlength="60"
+              placeholder="e.g. QA, Review, Backlog"
+            >
+          </div>
+        </div>
+
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" id="cancel-add-col-btn">Cancel</button>
+          <button type="submit" class="btn btn-primary" id="submit-add-col-btn">Add Column</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- Rename Column Dialog / Modal -->
+  <div id="rename-column-modal" class="modal-backdrop hidden" role="dialog" aria-modal="true" aria-labelledby="rename-column-title">
+    <div class="modal-dialog" style="max-width: 420px;">
+      <div class="modal-header">
+        <h2 id="rename-column-title" class="modal-title">Rename Column</h2>
+        <button type="button" class="btn-icon modal-close" id="close-rename-col-modal" aria-label="Close dialog">
+          <svg viewBox="0 0 20 20" fill="currentColor" style="width: 18px; height: 18px;">
+            <path fill-rule="evenodd" d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z" clip-rule="evenodd" />
+          </svg>
+        </button>
+      </div>
+
+      <form id="rename-column-form" novalidate>
+        <div class="modal-body">
+          <div id="rename-col-error" class="form-alert form-alert-error hidden" role="alert">
+            <svg viewBox="0 0 20 20" fill="currentColor">
+              <path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7 4a1 1 0 11-2 0 1 1 0 012 0zm-1-9a1 1 0 00-1 1v4a1 1 0 102 0V6a1 1 0 00-1-1z" clip-rule="evenodd" />
+            </svg>
+            <span id="rename-col-error-msg"></span>
+          </div>
+
+          <input type="hidden" id="rename-col-id" name="id">
+
+          <div class="form-group">
+            <label class="form-label" for="rename-column-input">
+              Column title <span class="required">*</span>
+            </label>
+            <input
+              id="rename-column-input"
+              name="name"
+              type="text"
+              class="form-control"
+              required
+              maxlength="60"
+            >
+          </div>
+        </div>
+
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" id="cancel-rename-col-btn">Cancel</button>
+          <button type="submit" class="btn btn-primary" id="submit-rename-col-btn">Save Changes</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- Delete Column Confirmation Dialog -->
+  <div id="delete-column-modal" class="modal-backdrop hidden" role="dialog" aria-modal="true" aria-labelledby="delete-col-title">
+    <div class="modal-dialog" style="max-width: 420px;">
+      <div class="modal-header">
+        <h2 id="delete-col-title" class="modal-title">Delete Column</h2>
+        <button type="button" class="btn-icon modal-close" id="close-delete-col-modal" aria-label="Close dialog">
+          <svg viewBox="0 0 20 20" fill="currentColor" style="width: 18px; height: 18px;">
+            <path fill-rule="evenodd" d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z" clip-rule="evenodd" />
+          </svg>
+        </button>
+      </div>
+
+      <div class="modal-body">
+        <p style="color: var(--slate-600); line-height: 1.5;">
+          Are you sure you want to delete column <strong id="delete-col-name-display" style="color: var(--slate-900);"></strong>?
+          Note: A column can only be deleted if it contains zero tasks.
+        </p>
+
+        <div id="delete-col-error" class="form-alert form-alert-error hidden" style="margin-top: 14px;" role="alert">
+          <svg viewBox="0 0 20 20" fill="currentColor">
+            <path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7 4a1 1 0 11-2 0 1 1 0 012 0zm-1-9a1 1 0 00-1 1v4a1 1 0 102 0V6a1 1 0 00-1-1z" clip-rule="evenodd" />
+          </svg>
+          <span id="delete-col-error-msg"></span>
+        </div>
+      </div>
+
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" id="cancel-delete-col-btn">Cancel</button>
+        <button type="button" class="btn btn-danger-solid" id="confirm-delete-col-btn">Delete Column</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Manage Board Members Dialog (Backend Supported) -->
+  <div id="members-modal" class="modal-backdrop hidden" role="dialog" aria-modal="true" aria-labelledby="members-modal-title">
+    <div class="modal-dialog">
+      <div class="modal-header">
+        <h2 id="members-modal-title" class="modal-title">Board Members</h2>
+        <button type="button" class="btn-icon modal-close" id="close-members-modal" aria-label="Close dialog">
+          <svg viewBox="0 0 20 20" fill="currentColor" style="width: 18px; height: 18px;">
+            <path fill-rule="evenodd" d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z" clip-rule="evenodd" />
+          </svg>
+        </button>
+      </div>
+
+      <div class="modal-body">
+        <div id="members-alert" class="form-alert form-alert-error hidden" role="alert">
+          <svg viewBox="0 0 20 20" fill="currentColor">
+            <path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7 4a1 1 0 11-2 0 1 1 0 012 0zm-1-9a1 1 0 00-1 1v4a1 1 0 102 0V6a1 1 0 00-1-1z" clip-rule="evenodd" />
+          </svg>
+          <span id="members-alert-msg"></span>
+        </div>
+
+        <!-- Add Member Form (Visible to Owner) -->
+        <form id="add-member-form" style="margin-bottom: 20px;">
+          <div class="form-group" style="margin-bottom: 10px;">
+            <label class="form-label" for="member-email-input">
+              Invite registered user by email
+            </label>
+            <div style="display: flex; gap: 8px;">
+              <input
+                id="member-email-input"
+                type="email"
+                class="form-control"
+                placeholder="teammate@taskboard.local"
+                required
+              >
+              <button type="submit" class="btn btn-primary" id="add-member-submit-btn" style="flex-shrink: 0;">
+                <span>Invite</span>
+              </button>
+            </div>
+          </div>
+        </form>
+
+        <!-- Current Members List -->
+        <h3 style="font-size: 0.9rem; font-weight: 600; color: var(--slate-700); margin-bottom: 10px;">
+          Current Members
+        </h3>
+        <div id="members-list" style="display: flex; flex-direction: column; gap: 8px; max-height: 200px; overflow-y: auto;">
+          <!-- Dynamically populated -->
+        </div>
+      </div>
+
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" id="close-members-dialog-btn">Done</button>
+      </div>
+    </div>
+  </div>
+
+  <script src="/api.js"></script>
+  <script src="/board.js"></script>
+</body>
+</html>
