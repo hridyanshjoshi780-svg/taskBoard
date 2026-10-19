@@ -1,0 +1,4 @@
+-- Seed accounts are created by server/db.js on first startup using hashed passwords.
+-- Demo credentials (change these for any non-local use):
+-- demo@taskboard.local / DemoPass123!
+-- teammate@taskboard.local / DemoPass123!
